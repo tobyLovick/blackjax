@@ -23,7 +23,7 @@ from blackjax.types import ArrayLikeTree, ArrayTree, PRNGKey
 
 __all__ = [
     "SliceState",
-    "SliceInfo",
+    # "SliceInfo",
     "init",
     "build_kernel",
     "as_top_level_api",
@@ -86,9 +86,9 @@ class SliceState(NamedTuple):
     n: int
 
 
-class SliceInfo(NamedTuple):
-    widths: jnp.ndarray
-    n: jnp.ndarray
+# class SliceInfo(NamedTuple):
+#     widths: jnp.ndarray
+#     n: jnp.ndarray
 
 
 def init(position: ArrayTree, logdensity_fn: Callable):
@@ -163,8 +163,8 @@ def slice_proposal(logdensity_fn, n_doublings) -> Callable:
             new_widths,
             n + 1,
         )
-        new_info = SliceInfo(new_widths, n + 1.0)
-        return new_state, new_info
+        # new_info = SliceInfo(new_widths, n + 1.0)
+        return new_state, _
 
     return generate
 
