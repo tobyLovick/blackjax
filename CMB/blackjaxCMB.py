@@ -3,7 +3,7 @@
 # |```bash
 # |python -m venv venv
 # |source venv/bin/activate
-# |pip install tqdm numpy jax anesthetic
+# |pip install tqdm numpy jax anesthetic cosmopower_jax
 # |pip install git+https://github.com/handley-lab/blackjax@nested_sampling
 # |python blackjaxCMB.py
 # |```

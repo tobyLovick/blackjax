@@ -1,5 +1,7 @@
 ### N.B.
-This fork of Blackjax includes code and figures of the blackjax-nested sampling implementation running on a CMB-likelihood (i.e. no noise/foregrounds cosmic-variance-only observations of the CMB). This seems to run much faster than the Polychord (https://github.com/PolyChord/PolyChordLite) implementation of the same nested sampling problem, and should harness GPU resources effeciently as well. All CMB realisations are generated using COSMOPOWERjax (https://github.com/dpiras/cosmopower-jax)
+This fork of Blackjax includes code and figures of the blackjax-nested sampling implementation running on a CMB-likelihood (i.e. no noise/foregrounds cosmic-variance-only observations of the CMB). This seems to run much faster than the Polychord (https://github.com/PolyChord/PolyChordLite) implementation of the same nested sampling problem, and should harness GPU resources effeciently as well. All CMB realisations are generated using COSMOPOWERjax (https://github.com/dpiras/cosmopower-jax).
+
+Full installation instructions in a virtual environment are given in CMB/blackjaxCMB.py to generate samples and a plot
 
 # BlackJAX
 ![Continuous integration](https://github.com/blackjax-devs/blackjax/actions/workflows/test.yml/badge.svg)
