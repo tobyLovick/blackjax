@@ -1,3 +1,14 @@
+# | # Install instructions
+# |
+# |```bash
+# |python -m venv venv
+# |source venv/bin/activate
+# |pip install tqdm numpy jax anesthetic
+# |pip install git+https://github.com/handley-lab/blackjax@nested_sampling
+# |python blackjaxCMB.py
+# |```
+#
+
 import jax
 import jax.numpy as jnp
 import numpy as np
@@ -5,17 +16,16 @@ import tqdm
 import blackjax
 import blackjax.ns.adaptive
 
-#| You may need to set jax to double. This is may be neccesary due to the flatness of the likelihood function near the peak
+#| You may need to set jax to double, due to the flatness of the likelihood function near the peak
 jax.config.update('jax_enable_x64', True) 
 
 paramnames = [r'$\Omega_b h^2$',r'$\Omega_c h^2$',r'$h$',r'$\tau$',r'$n_s$',r'$\ln(10^{10}A_s)$']
 params = ['Ωbh2', 'Ωch2', 'h', 'τ', 'ns', 'lnA']
-#| Random number generator
+#| Seed set for reproducibility
 rng_key = jax.random.PRNGKey(0)
+
 #| Define the loglikelihood and logprior functions
 d = 6 # Dimension of the problem
-
-
 #| loglikelihood function
 class CMB(object):
     def __init__(self, Cl):
@@ -90,3 +100,23 @@ logL_birth = np.concatenate((dead.logL_birth, live.logL_birth), dtype=float)
 data = np.concatenate((dead.particles, live.particles), dtype=float)
 samples = NestedSamples(data, logL=logL, logL_birth=logL_birth, columns=params, labels=paramnames)
 samples.to_csv('jaxLCDM.csv')
+
+#| Basic Plotting Code
+from anesthetic import make_2d_axes
+params = ['Ωbh2', 'Ωch2', 'h', 'τ', 'ns', 'lnA']
+fig, axes = make_2d_axes(params, upper = False)
+
+samples.plot_2d(axes,c = '#CC3311', #Plotting with recommended resolution settings
+                      kind={'lower': 'kde_2d', 'diagonal': 'kde_1d'},
+                      diagonal_kwargs={'nplot_1d': 1000},
+                      lower_kwargs={'nplot_2d': 100**2},
+                      ncompress='entropy',label='JAX samples')
+
+for i in range(6): # add truth lines at the input parameters used to generate the data
+    for j in range(i+1):
+        ax = axes.loc[params[i], params[j]]
+        i!=j and ax.axhline(planckparams[i], color='k', linestyle='--')
+        ax.axvline(planckparams[j], color='k', linestyle='--',label='Ground Truth')
+
+axes.iloc[-1, 0].legend(loc='lower center', bbox_to_anchor=(len(axes)/2, len(axes)), ncol=6)
+fig.savefig('jaxLCDM.pdf', format="pdf", bbox_inches = 'tight') 
